@@ -1,0 +1,1501 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss  xmlns:atom="http://www.w3.org/2005/Atom" 
+      xmlns:media="http://search.yahoo.com/mrss/" 
+      xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+      xmlns:dc="http://purl.org/dc/elements/1.1/" 
+      version="2.0">
+<channel>
+<title>myblog</title>
+<link>https://your-website-url.example.com/</link>
+<atom:link href="https://your-website-url.example.com/index.xml" rel="self" type="application/rss+xml"/>
+<description>A blog built with Quarto</description>
+<generator>quarto-1.8.25</generator>
+<lastBuildDate>Thu, 23 Apr 2026 04:00:00 GMT</lastBuildDate>
+<item>
+  <title>Single Hypothesis Test of Resting Blood Pressure</title>
+  <dc:creator>Hayatt Slimani</dc:creator>
+  <link>https://your-website-url.example.com/posts/post3/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>This post will conduct a hypothesis test to evaluate the cleaned Heart disease dataset I analyzed from my Exploratory Data Analysis of Heart Disease post. The data consists of patient medical information used to explore patterns related to heart disease. The data set was retrieved from <a href="https://www.kaggle.com/datasets/abdmental01/heart-disease-dataset?select=heart_disease_uci.csv">Kaggle</a>, however, originally based on the <a href="https://archive.ics.uci.edu/dataset/45/heart+disease">Cleveland Heart Disease dataset</a>. Collectively, 748 patients will be examined, with each row representing a single patient.</p>
+<p>The question guiding this analysis: Is the proportion of individuals that have high blood pressure within this Heart Disease data set, higher than the global average?</p>
+</section>
+<section id="exploratory-analysis" class="level1">
+<h1>Exploratory Analysis</h1>
+<p>To begin, I took the observations for resting blood pressure and created a new column determining whether or not the patient’s value is considered high blood pressure. According to various health organization reports, such as <a href="https://www.who.int/news-room/fact-sheets/detail/hypertension">the World Health Organization</a> and the <a href="https://www.cdc.gov/high-blood-pressure/about/index.html">Center for Disease Control</a>, a current global standard for high resting blood pressure is defined as &gt;= 130 mmHg.</p>
+<p>To visualize this data, I then created a bar chart depicting the amount of individuals that have and do not have high blood pressure.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">source</span> (<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Hypothesis_Test_Heart_Disease.R"</span>) </span>
+<span id="cb1-2"></span>
+<span id="cb1-3">Barchart_BP <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(hypothesis_test_dataset, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> High_BP, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> High_BP)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_bar</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_fill_manual</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Yes"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"darkseagreen3"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"No"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"seagreen4"</span>))<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(</span>
+<span id="cb1-7">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Resting High Blood Pressure (mmHg)"</span>, </span>
+<span id="cb1-8">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Count"</span>, </span>
+<span id="cb1-9">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Presence of High Resting Blood Presure"</span>, </span>
+<span id="cb1-10">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">caption =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Source: Kaggle Heart Disease Dataset"</span></span>
+<span id="cb1-11">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-12">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">guides</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">guide_legend</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'High BP'</span>))<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-13">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_minimal</span>()</span></code></pre></div></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">Barchart_BP</span></code></pre></div></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://your-website-url.example.com/posts/post3/index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>From this plot, we can see the total number of individuals with high resting blood pressure is 457 out of the total sample size of 748 (61%). This gives a sample proportion of 0.61, indicating a notably uneven split between the groups.</p>
+</section>
+<section id="null-value" class="level1">
+<h1>Null Value</h1>
+<p>According to <a href="https://www.who.int/news-room/fact-sheets/detail/hypertension">World Health Organization’s</a> estimate, 1.4 billion, or 33% of adults, 30-79 years old had hypertension in 2024. This benchmark is significant because it provides a standardized reference point for the prevalence of high blood pressure among adults globally.</p>
+</section>
+<section id="hypotheses" class="level1">
+<h1>Hypotheses</h1>
+<ul>
+<li><p><strong>Null hypothesis (H₀):</strong> The proportion of adults with high blood pressure in this dataset is the same as the global prevalence reported by the World Health Organization ( <strong>H₀ :</strong> p = 0.33)</p></li>
+<li><p><strong>Alternative hypothesis (Hₐ):</strong> The proportion of adults with high blood pressure in this dataset is greater than the global prevalence reported by the World Health Organization ( <strong>Hₐ :</strong> p &gt; 0.33)</p></li>
+</ul>
+<p>This is a one sided test looking at the right/upper tail because I am testing if the proportion in the data set differs by having a greater rate than the global statistic.</p>
+</section>
+<section id="bootstrap-confidence-interval" class="level1">
+<h1>Bootstrap Confidence Interval</h1>
+<p>This plot represents the bootstrap distribution of the sample proportion of individuals with high resting blood pressure (≥ 130 mmHg). The red markings indicate the 95% confidence interval. This bootstrap is repeated with replacement 10,000 times to ensure a higher precision in the sample distribution.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">BP_boot_dist <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> hypothesis_test_dataset<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> </span>
+<span id="cb3-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">specify</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">response =</span> High_BP, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">success =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Yes"</span>)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb3-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">generate</span> (<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">reps =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10000</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"bootstrap"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb3-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">calculate</span> (<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">stat =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"prop"</span>)</span></code></pre></div></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">ci <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> BP_boot_dist <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">get_ci</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">level =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.95</span>)</span></code></pre></div></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">BP_boot_dist <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb5-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">visualize</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb5-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">shade_confidence_interval</span>(ci, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"red"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NULL</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb5-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>( </span>
+<span id="cb5-5">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Distribution of the Proportions of the Bootstrap Samples"</span>,</span>
+<span id="cb5-6">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Proportions"</span>,</span>
+<span id="cb5-7">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Count"</span></span>
+<span id="cb5-8">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb5-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_minimal</span>()</span></code></pre></div></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://your-website-url.example.com/posts/post3/index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>With a 95% bootstrap confidence interval, there is a lower bound of 0.576 and an upper bound of 0.646. This means we are 95% confident in that the true proportion of indiviuals with high resting blood pressure in this population lies between 56.7% and 64.6%. Before running the test, we can see the null value (0.33) based on the data provided by the WHO, lies well outside the interval. This suggests that the proportion in this sample is higher than the global benchmark we are comparing against.</p>
+</section>
+<section id="null-distribution-and-p-value" class="level1">
+<h1>Null Distribution and P-value</h1>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">BP_null_distribution <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> hypothesis_test_dataset <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> </span>
+<span id="cb6-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">specify</span> (<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">response =</span> High_BP, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">success =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Yes"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> </span>
+<span id="cb6-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">hypothesize</span> (<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">null =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"point"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">p =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.33</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> </span>
+<span id="cb6-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">generate</span> (<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">reps =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10000</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"draw"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb6-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">calculate</span> (<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">stat =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"prop"</span>)</span></code></pre></div></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1">BP_p_value <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> BP_null_distribution <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">get_p_value</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">obs_stat =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">457</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">748</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">direction =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"greater"</span>)</span></code></pre></div></div>
+</details>
+</div>
+<p>The observed statistic is the sample proportion of adults with high resting blood pressure. It is calculated to be 0.611, gathered from 457/748. In addition, the p-value is a very miniscule value close to 0. This means that there was no sample that was simulated under the null that calculated a result to be as similarly high of a proportion as the observed statistic in the real data set.</p>
+</section>
+<section id="visualizing-the-p-value" class="level1">
+<h1>Visualizing the P-value</h1>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">visualize</span>(BP_null_distribution) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb8-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">shade_p_value</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">obs_stat =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">457</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">748</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">direction =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"greater"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb8-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>( </span>
+<span id="cb8-4">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Null Distribution of the Proportions of with High Resting Blood Pressure"</span>,</span>
+<span id="cb8-5">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Proportion"</span>,</span>
+<span id="cb8-6">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Count"</span></span>
+<span id="cb8-7">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb8-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_minimal</span>()</span></code></pre></div></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://your-website-url.example.com/posts/post3/index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The null distribution is centered around 0.33, matching what is expected if the true proportion of high resting blood pressure corresponded with the global statistic. The red marking to the right most of the graph indicates the observed statistic of 0.61. Clearly, we can see that the observed statistic is far higher than the 10,000 samples simulated in this null distribution. In result, there is no observable region shaded by the p-value.</p>
+</section>
+<section id="decision" class="level1">
+<h1>Decision</h1>
+<p>To determine significance level, I’ve selected the conventional critical value of 0.05. In conjunction with the gathered p-value being very close to zero, our data demonstrates it is unlikely under the null hypothesis, giving reason to reject it. This suggests a strong indication that the proportion of individuals high resting blood pressure exceeds the global benchmark.</p>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>The original data set from the Cleveland data was conducted in the late 1980s. The WHO statistic I am using as a comparison, is from 2024. This means the data is coming from two different time periods entirely. Its worth emphasizing that in this report, I am conducting a single proportion hypothesis test comparing a sample to a population benchmark, rather than conducting a time trend or historical comparison. Differences in time period could very well be a factor in influencing the comparison. Additionally, the data set of individuals selected of both the data set as well as the global benchmark and significant. The global statistic has been gathered with broad, diverse population, gathering data from adults ranging across the globe. On the other hand, the Cleveland data set is comprised of data from the US, Hungary, and Switzerland. In addition, the individuals selected for this data set were specifically chosen for clinical testing for heart disease. This means that there could have been sampling biases involved as these individuals are perhaps more likely to have higher blood pressure than the general public.</p>
+<p>In all, the hypothesis test and bootstrap confidence interval give reason to support the same conclusion. We do reject the null hypothesis, that the high resting blood pressure rate in the sample could not likely have been due to chance. However, given the limitations it is significant to note this conclusion should be cautiously interpreted, as several factors can help to explain the observations.</p>
+
+
+</section>
+
+ ]]></description>
+  <guid>https://your-website-url.example.com/posts/post3/</guid>
+  <pubDate>Thu, 23 Apr 2026 04:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Exploratory Data Analysis of Heart Disease</title>
+  <dc:creator>Hayatt Slimani</dc:creator>
+  <link>https://your-website-url.example.com/posts/post2/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>The data consists of medical information regarding patients being evaluated for heart disease. This dataset was retrieved from <a href="https://www.kaggle.com/datasets/abdmental01/heart-disease-dataset?select=heart_disease_uci.csv">Kaggle</a>, however, originally based on the <a href="https://archive.ics.uci.edu/dataset/45/heart+disease">Cleveland Heart Disease dataset</a>. The data is compiled of clinical patients from the US, Hungary, and Switzerland. Collectively, 919 patient data observations were gathered, with each row is represented by a single patient ranging from 28 to 77 years old.</p>
+<section id="broader-significance" class="level3">
+<h3 class="anchored" data-anchor-id="broader-significance">Broader Significance</h3>
+<p>Cardiovascular disease (CVD) is a leading cause of mortality within the United States. Early identification of risk factors is crucial in prevention of CVD. The variables selected to be examined in this analysis are representative of some of the most studied predictors of cardiovascular diseases. This exploratory data analysis becomes especially valuable when looking at the interaction of multiple factors to determine an individuals overall risk profile.</p>
+<p>It is particularly relevant in recent ongoing discussions regarding the effectiveness of routine screening tools such as ECGs. For example, a recent 2024 study conducted by <a href="https://jamanetwork.com/journals/jamainternalmedicine/fullarticle/2820721">JAMA Internal Medicine</a> analyzing working age adults in Japan, highlights the potentials and limitations surrounding ECG based screenings. In this context, the present analysis contributes to a larger conversation of how can certain variables be used to better understand complex diseases.</p>
+</section>
+<section id="variables" class="level3">
+<h3 class="anchored" data-anchor-id="variables">Variables</h3>
+<p>Here is the breakdown of the variables being focused on:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Variable Name</th>
+<th style="text-align: center;">Description</th>
+<th style="text-align: right;">Type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Age</td>
+<td style="text-align: center;">Age of Patient (Years)</td>
+<td style="text-align: right;">Continuous</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Cholesterol</td>
+<td style="text-align: center;">Serum Cholesterol (mg/dl)</td>
+<td style="text-align: right;">Continuous</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Resting_Blood_Pressure</td>
+<td style="text-align: center;">Resting Blood Pressure (mm Hg)</td>
+<td style="text-align: right;">Continuous</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Sex</td>
+<td style="text-align: center;">Gender of patient (Male or Female)</td>
+<td style="text-align: right;">Categorical</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Chest_Pain_Type</td>
+<td style="text-align: center;">The various types of chest pain experienced by patients (typical angina, atypical angina, non-anginal, asymptomatic)</td>
+<td style="text-align: right;">Categorical</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Heart_Disease</td>
+<td style="text-align: center;">Presence of heart disease (Yes or No)</td>
+<td style="text-align: right;">Categorical</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Resting_ECG</td>
+<td style="text-align: center;">Results of resting electrocardiographic result (normal, ST-T abnormality, left ventricular hypertrophy)</td>
+<td style="text-align: right;">Categorical</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="data-cleaning" class="level3">
+<h3 class="anchored" data-anchor-id="data-cleaning">Data Cleaning</h3>
+<p>The original dataset contained 16 various medical variables determined to be relevant to heart disease. For this analysis, I selected a small subset of these to maintain the focus of the scope. I renamed some variables for clarity such as cp to Chest_Pain_Type, chol to Cholesterol, restecg to Resting_ECG, trestbps to Resting_Blood_Pressure, num to Heart_Disease, and the remaining variables to adjust capitalization for consistency.</p>
+<p>Additionally, although the data set was mainly pre-cleaned, there were 171 rows of missing values denoted by 0.00, within the “Cholesterol” column, which I filtered out. Having a cholesterol result of 0.00 is physiologically impossible, therefore I recognized and treated it as a placeholder for an unknown value. Removing these rows improves the validity of the analysis by preventing unrealistic values from distorting the results. However, this decision may also introduce bias, as the excluded observations are not distributed across all patients and may impact the representation of the sample. After filtering out these rows, there were 748 observations of patient data that remained which I conducted my analysis on.</p>
+<p>Moreover, the target variable Heart_Disease indicates the absence or presence of heart disease. Originally, it was listed on a 0-4 scale representing a scale of the severity. Ultimately, I decided to change this column to be representative in a binary categorical manner denoted by a “yes” or “no”. This simplification makes the analysis more straightforward, though it reduces variation in disease progression.</p>
+</section>
+<section id="continuous-variables" class="level3">
+<h3 class="anchored" data-anchor-id="continuous-variables">Continuous Variables</h3>
+<p>This histogram represents the age distribution across patients.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">source</span> (<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Heart_Disease_Data.R"</span>) </span>
+<span id="cb1-2"></span>
+<span id="cb1-3">Histogram_Age <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(cleaned_heart_disease_dataset) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb1-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> Age) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb1-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_histogram</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bins =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"darkseagreen3"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(</span>
+<span id="cb1-7">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Age in years"</span>, </span>
+<span id="cb1-8">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Count"</span>, </span>
+<span id="cb1-9">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Distribution of Patient Age"</span>, </span>
+<span id="cb1-10">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">caption =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Source: Kaggle Heart Disease Dataset"</span></span>
+<span id="cb1-11">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-12">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_vline</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xintercept =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mean</span>(cleaned_heart_disease_dataset<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>Age), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"red"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-13">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_minimal</span>()</span></code></pre></div></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">Histogram_Age</span></code></pre></div></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://your-website-url.example.com/posts/post2/index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The age distribution appears roughly symmetrical and uni-modal. The average patient is roughly 53 years old, which indicates the data set is mainly centered around middle aged patients. Based on the 1.5 x IQR rule, there are no extreme outliers falling within the bounds of 26.5 and 78.5 years old.</p>
+<p>The focus around age 53 likely suggests sample selection over a true population wide age distribution. Individuals in this age range are at a higher risk for heart related conditions, making them more likely to go through cardiac testing and evaluations compared to a younger patient. This explains the centrality and representation in this clinical heart disease dataset.</p>
+<hr>
+<p>This histogram represents the distribution of the resting blood pressure of patients as they were admitted into the hospital.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">Histogram_RestingBP <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(cleaned_heart_disease_dataset) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb3-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> Resting_Blood_Pressure) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb3-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_histogram</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bins =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"darkseagreen3"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb3-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(</span>
+<span id="cb3-5">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Resting Blood Pressure (mm Hg)"</span>, </span>
+<span id="cb3-6">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Count"</span>, </span>
+<span id="cb3-7">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Distribution of Blood Pressure at Hospital Admission"</span>, </span>
+<span id="cb3-8">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">caption =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Source: Kaggle Heart Disease Dataset "</span></span>
+<span id="cb3-9">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb3-10">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_vline</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xintercept =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mean</span>(cleaned_heart_disease_dataset<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>Resting_Blood_Pressure), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"red"</span>)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb3-11"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_minimal</span>()</span></code></pre></div></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">Histogram_RestingBP</span></code></pre></div></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://your-website-url.example.com/posts/post2/index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The distribution of resting blood pressure is uni-modal and has a slight right skew. As visually seen in the plot, the majority of patients lie between the interquartile range (IQR) bounds of 120 mm Hg to 140.7 mm Hg. This right skew towards high blood pressure is shows a selection of patients with comparatively elevated blood pressure results, which are notably associated with increased cardiovascular risks.</p>
+<p>Additionally, potential outliers are denoted according to the 1.5 x IQR rule, with values below 88.2 mm Hg and above 173.0 mm Hg. These values are most likely real observation rather than errors as high values can reflect hypertension and low values can reflect hypotension. Additionally, wthin this data set specifically, we are examining individuals being tested for heart disease, indicating that the presense of extreme values are not unexpected. In all, the presence of higher blood pressure values corroborates that resting blood pressure can serve as a predictive variable for an increased risk of heart disease.</p>
+<hr>
+<p>This histogram represents the distribution of cholesterol levels within the dataset.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">Histogram_Cholesterol <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(cleaned_heart_disease_dataset) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb5-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> Cholesterol) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb5-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_histogram</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bins =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">18</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"darkseagreen3"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb5-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(</span>
+<span id="cb5-5">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Serum Cholesterol (mg/dl)"</span>, </span>
+<span id="cb5-6">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Count"</span>, </span>
+<span id="cb5-7">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Distribution of Cholesterol Levels"</span>, </span>
+<span id="cb5-8">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">caption =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Source: Kaggle Heart Disease Dataset"</span></span>
+<span id="cb5-9">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb5-10">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_vline</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xintercept =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mean</span>(cleaned_heart_disease_dataset<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>Cholesterol), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"red"</span>)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb5-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_minimal</span>()</span></code></pre></div></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">Histogram_Cholesterol</span></code></pre></div></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://your-website-url.example.com/posts/post2/index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The cholesterol distribution is uni-modal, with a right skew. The mean of cholesterol levels lies at 201 mg/dl. Essentially, most patients have moderate levels of cholesterol while a small selection of patients have much higher levels which pulls the mean upwards, skewing it towards the right.</p>
+<p>Additionally, according to the 1.5 x IQR rule, patients with cholesterol levels below 113.5 mg/dl and above 373.5 mg/dl are outliers. These outlying values are likely true test results rather than errors. Givent the medical context of this data, the presence of these high cholesterol values is significant as they may indicate a greater risk of heart disease in patients, further establishing relevance of the data’s skew.</p>
+</section>
+<section id="categorical-variables" class="level3">
+<h3 class="anchored" data-anchor-id="categorical-variables">Categorical Variables</h3>
+<p>This bar chart represents the comparison of genders within the dataset.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1">Barchart_Sex <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(cleaned_heart_disease_dataset, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> Sex, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> Sex)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb7-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_bar</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb7-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_fill_manual</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Male"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"darkseagreen3"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Female"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"seagreen4"</span>))<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb7-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(</span>
+<span id="cb7-5">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Sex"</span>, </span>
+<span id="cb7-6">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Count"</span>, </span>
+<span id="cb7-7">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Heart Disease Distribution by Gender"</span>, </span>
+<span id="cb7-8">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">caption =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Source: Kaggle Heart Disease Dataset"</span></span>
+<span id="cb7-9">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb7-10">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_minimal</span>()</span></code></pre></div></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1">Barchart_Sex</span></code></pre></div></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://your-website-url.example.com/posts/post2/index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The vast majority of patients tested for heart disease are male. Per <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11148660/">PubMed</a>, heart related diseases are 8.3% more prevalent within men than women. This trend suggests an explanation to the higher proportion of males in this selection of patients in this research.</p>
+<p>The higher population of male patients may also reflect sampling bias not related to who received testing and is in the dataset. Since this data set only includes individuals who had cardiac evaluations, it represents a selected clinical sample rather than a comprehensive population distribution. Therefore, any sex-based conclusions should be interpreted cautiously since the observed patterns may be influenced by factors such as biological differences or the sampling process used to collect the data.</p>
+<hr>
+<p>This bar chart represents the distribution of types of chest pain reported by patients.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1">Barchart_Chest_Pain_Type <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(cleaned_heart_disease_dataset, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> Chest_Pain_Type, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> Chest_Pain_Type)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb9-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_bar</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb9-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_fill_manual</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"asymptomatic"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"darkseagreen3"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"atypical angina"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"seagreen4"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"non-anginal"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"seagreen3"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"typical angina"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"aquamarine"</span>))<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb9-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(</span>
+<span id="cb9-5">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Type of Chest Pain"</span>, </span>
+<span id="cb9-6">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Count"</span>, </span>
+<span id="cb9-7">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Heart Disease Distribution by Type of Chest Pain"</span>, </span>
+<span id="cb9-8">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">caption =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Source: Kaggle Heart Disease Dataset"</span></span>
+<span id="cb9-9">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb9-10">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">guides</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">guide_legend</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Category of Chest Pain'</span>))<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb9-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_minimal</span>()</span></code></pre></div></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1">Barchart_Chest_Pain_Type</span></code></pre></div></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://your-website-url.example.com/posts/post2/index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>There is an overwhelming majority of patients who reported experiencing asymptomatic chest pains. Atypical angina and non-aginal pains occurred in equal amounts, and the least experienced is typical angina. This spread is somewhat expected in chest pain tests, as a notable amount of patients do not present typical symptoms. According to <a href="https://www.health.harvard.edu/heart-health/the-danger-of-silent-heart-attacks">Harvard Health</a>, 45% of all heart attacks and considered silent heart attacks, exhibiting less severe or brief symptoms.</p>
+<p>The pattern reinforces a significant limitation of symptom based assessments, chest pain alone is insufficient for accurately detecting cardiovascular related diseases. Diagnosis requires numerous additional variables beyond self reported mild, atypical and absent pain types.</p>
+<hr>
+<p>This bar chart represents the various resting patient levels of the Electrocardiographic test.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1">Barchart_ECG <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(cleaned_heart_disease_dataset, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> Resting_ECG, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> Resting_ECG)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb11-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_bar</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb11-3">   <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_fill_manual</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"lv hypertrophy"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"darkseagreen3"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"st-t abnormality"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"seagreen4"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"normal"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"seagreen3"</span>))<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb11-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(</span>
+<span id="cb11-5">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Resting Electrocardiogrpahic Result"</span>, </span>
+<span id="cb11-6">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Count"</span>, </span>
+<span id="cb11-7">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Distribution of Resting ECG Results"</span>, </span>
+<span id="cb11-8">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">caption =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Source: Kaggle Heart Disease Dataset"</span></span>
+<span id="cb11-9">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb11-10">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">guides</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">guide_legend</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Levels of ECG'</span>))<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb11-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_minimal</span>()</span></code></pre></div></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1">Barchart_ECG</span></code></pre></div></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://your-website-url.example.com/posts/post2/index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This data shows a vast majority of normal ECG results at the time the patient was admitted to the hospital. This indicates that a normal ECG reading may not always indicate the absence of heart diseases, emphasizing the significance to consider several variables.</p>
+<hr>
+<p>This bar chart represents the amount of patients who have a heart disease.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1">Barchart_Heart_Disease <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(cleaned_heart_disease_dataset, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> Heart_Disease, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> Heart_Disease)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb13-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_bar</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb13-3">   <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_fill_manual</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"No"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"darkseagreen3"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Yes"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"seagreen4"</span>))<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb13-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(</span>
+<span id="cb13-5">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Presence of Heart Disease"</span>, </span>
+<span id="cb13-6">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Count"</span>, </span>
+<span id="cb13-7">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Heart Disease Distribution"</span>, </span>
+<span id="cb13-8">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">caption =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Source: Kaggle Heart Disease Dataset"</span></span>
+<span id="cb13-9">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb13-10">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">guides</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">guide_legend</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Does the patient have heart disease'</span>))<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb13-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_minimal</span>()</span></code></pre></div></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1">Barchart_Heart_Disease</span></code></pre></div></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://your-website-url.example.com/posts/post2/index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This data set shows a nearly balanced distribution between patients who have and do not have a heart disease. This is allows for a more balanced analysis of groups which is more likely to create clear interpretations of how variables correlate with heart disease over an imbalanced dataset.</p>
+</section>
+<section id="comparing-variables" class="level3">
+<h3 class="anchored" data-anchor-id="comparing-variables">Comparing Variables</h3>
+<p>This box plot is a comparison of the age of patients with and without heart disease to draw emphasis on the differences within the groupings.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1">Boxplot_Age_by_Heart_Disease <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(cleaned_heart_disease_dataset, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> Heart_Disease, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> Age)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb15-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_boxplot</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"darkseagreen3"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb15-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Presense of Heart Disease"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Age of Patient"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Comparison of Patient Ages and Presense of Heart Disease"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">caption =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Source: Kaggle Heart Disease Dataset"</span>)</span></code></pre></div></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1">Boxplot_Age_by_Heart_Disease</span></code></pre></div></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://your-website-url.example.com/posts/post2/index_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>From this box plot, we can see a positive association between patients with heart disease and age. One way this is indicated is by the higher median within the “Yes” category than the “No” category. This pattern aligns with the understanding that the risk for cardiovascular disease increases over time. Additionally, we can see one outlier higher in the “No” category and lower in the “Yes” category, however, this does not affect the trend drastically.</p>
+<hr>
+<p>This box plot represents the comparison of resting blood pressure and resting ECG results at the time of patients admitted into the hospital.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1">Boxplot_Blood_Pressure_by_ECG <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(cleaned_heart_disease_dataset, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> Resting_ECG, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span>  Resting_Blood_Pressure)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb17-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_boxplot</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"darkseagreen3"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb17-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Resting ECG Result  (mm Hg)"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Resting Blood Pressure"</span>,<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Comparison of Resting Blood Pressure and Resting ECG Results"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">caption =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Source: Kaggle Heart Disease Dataset"</span>)</span></code></pre></div></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1">Boxplot_Blood_Pressure_by_ECG</span></code></pre></div></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://your-website-url.example.com/posts/post2/index_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The most notable difference in medians across the groups is higher with patients who have st-t abnormality. These patients tended to have a higher typical resting blood pressure result as well. Additionally, the blood pressure results among these patients are the most spread of the groups, meaning they have more variability. Moreover, patients testing normal or lv hypertropy, have several outliers with very high resting blood pressure results.</p>
+</section>
+<section id="predictors-and-limitations" class="level3">
+<h3 class="anchored" data-anchor-id="predictors-and-limitations">Predictors and Limitations</h3>
+<p>In this analysis, age, cholesterol, and resting blood pressure appear to be very influential variables associated with heart disease. Cumulatively from this data set, these finding suggest that heart disease risk is multifactorial, meaning we cannot rely on understanding through a single variable. Rather, it is a combination of several indicators in the overall findings that allow for a more holistically understanding and prediction of risk.</p>
+<p>Simultaneously, the analysis appears to have some limitations. The 171 rows of missing data regarding cholesterol placeholders may affect representation. Additionally, the simplification of heart disease into a binary sample size removes important variation, which can obscure some dynamics. Finally, the sample size and clinical selection of patients limits the generalizability to broader populations. Despite these limitations, the analysis offers foundational insight into indicators of cardiovascular risk and emphasizes a multivariable approach in early detection.</p>
+
+
+</section>
+</section>
+
+ ]]></description>
+  <guid>https://your-website-url.example.com/posts/post2/</guid>
+  <pubDate>Thu, 02 Apr 2026 04:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>An Epic journey: One Piece</title>
+  <dc:creator>Hayatt Slimani</dc:creator>
+  <link>https://your-website-url.example.com/posts/post1/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<section id="synopsis" class="level1">
+<h1>Synopsis</h1>
+<p><strong><a href="https://www.youtube.com/watch?v=LI0aOPujj8o">Wealth, fame, power!</a></strong></p>
+<p><em>One piece</em> is an ongoing Japanese manga (comic book) and anime written by Eiichiro Oda since 1999. It is a globally known as a story and symbol of freedom and liberation. <em>One piece</em> characters demonstrate that despite facing adversity, struggles, pain, losses, or victories, if you trust yourself and keep pushing forward, you can achieve your dreams.</p>
+<p>The story follows a teenage boy, Monkey D. Luffy, who ate the Gum Gum fruit and became a rubber man. His goals are to gather a pirate crew, sail the Grand Line, find the ultimate treasure, known as the One Piece, and thus become King of the Pirates.</p>
+<hr>
+<section id="reasons-you-should-watch-one-piece" class="level2">
+<h2 class="anchored" data-anchor-id="reasons-you-should-watch-one-piece">Reasons you should watch <em>One Piece</em>:</h2>
+<ol type="1">
+<li>The story is ongoing, so you can enjoy it spoiler free</li>
+<li>You enjoy action/adventure stories with extensive world building, loveable characters, and deep backstories</li>
+<li>You like mysteries and coming up with theories</li>
+<li>You enjoy catchy tunes</li>
+<li>There are many parallels that mirror our real world, from history and cultures to people and locations</li>
+</ol>
+</section>
+<section id="messages-dichotomies-of-one-piece-themes" class="level2">
+<h2 class="anchored" data-anchor-id="messages-dichotomies-of-one-piece-themes">Messages: Dichotomies of <em>One Piece</em> Themes</h2>
+<ul>
+<li>Oppression/ Injustice - Resistance / Freedom</li>
+<li>Discrimination / Racism - Equality / Coexistence</li>
+<li>Blood family - Found families</li>
+<li>Fate - Free will</li>
+<li>Power - Humanity</li>
+<li>Forbidden knowledge - Truth / Liberation</li>
+<li>Inherited will / Legacy</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://your-website-url.example.com/posts/post1/strawhats.jpg" class="img-fluid figure-img"></p>
+<figcaption>The Strawhat Crew</figcaption>
+</figure>
+</div>
+</section>
+<section id="one-piece-pacing" class="level2">
+<h2 class="anchored" data-anchor-id="one-piece-pacing">One Piece Pacing</h2>
+<p>A common concern for new viewers is the length of <em>One Piece</em>. In spite of this, the story is comprised of a multitude of intricate intertwining stories. Each arc develops more of the world, retelling past stories and legacies while introducing new characters and conflicts. Click <a href="https://onepiece.fandom.com/wiki/Episode_Guide">here</a> to view an episode guide broken down by the story arcs.</p>
+<p>Now, you may be asking: <code>How long will it take to catch up?</code></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1">total_episodes <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1160</span></span>
+<span id="cb1-2">episode_duration <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">24</span> </span>
+<span id="cb1-3">total_minutes <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> total_episodes <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> episode_duration</span>
+<span id="cb1-4">total_hours <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> total_minutes <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">60</span></span>
+<span id="cb1-5">total_days <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> total_hours<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">24</span></span>
+<span id="cb1-6">total_days</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 19.33333</code></pre>
+</div>
+</div>
+<p>It will take around <strong>19 days</strong> of consecutive binge watching to catch up to the current episode of <em>One Piece</em>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">one_hour_a_day <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> total_hours</span>
+<span id="cb3-2">one_hour_a_day</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 464</code></pre>
+</div>
+</div>
+<p>More practically, if you allot one hour to watching <em>One Piece</em> a day, you would catch up in <strong>464 days</strong> or roughly <strong>1 year and 3 months</strong>.</p>
+</section>
+<section id="viewer-experience" class="level2">
+<h2 class="anchored" data-anchor-id="viewer-experience">Viewer Experience</h2>
+<p>The One Piece journey is also shaped by community engagement, where fans exchange theories, interpretations, and reactions as the story continues to unfold. The anime can be enjoyed in both Japanese with English subtitles or with the English dub versions. Alternatively, the experience can also be equally as enjoyable when reading the manga, which currently spans over 1,181 chapters and is structured in arcs. While keeping up with the manga, I often listen to <a href="https://www.youtube.com/watch?v=SYZao9qhyLI&amp;list=RDSYZao9qhyLI&amp;start_radio=1">this official soundtrack playlist</a> to help create an immersive atmosphere and set the tone of the intense experience.</p>
+
+
+</section>
+</section>
+
+ ]]></description>
+  <guid>https://your-website-url.example.com/posts/post1/</guid>
+  <pubDate>Sat, 24 Jan 2026 05:00:00 GMT</pubDate>
+</item>
+</channel>
+</rss>

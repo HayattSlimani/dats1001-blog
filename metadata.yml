@@ -1,0 +1,12 @@
+---
+:id: 402640942
+:submitters:
+- :name: Hayatt Slimani
+  :email: hayatt.slimani@gwu.edu
+:created_at: !ruby/object:ActiveSupport::TimeWithZone
+  utc: 2026-04-03 04:00:00.307807000 Z
+  zone: !ruby/object:ActiveSupport::TimeZone
+    name: America/Los_Angeles
+  time: 2026-04-02 21:00:00.307807000 Z
+:status: processed
+:score: 23.5

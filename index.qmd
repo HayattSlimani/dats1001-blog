@@ -1,0 +1,16 @@
+---
+title: "DATS 1001"
+author: "Hayatt Slimani"
+listing:
+  contents: posts
+  feed: false
+  sort: "date desc"
+  type: default
+  categories: false 
+  sort-ui: false
+  filter-ui: false
+page-layout: full
+title-block-banner: true
+---
+
+Hello there! Welcome to my blog :)

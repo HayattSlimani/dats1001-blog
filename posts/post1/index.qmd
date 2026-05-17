@@ -1,0 +1,79 @@
+---
+title: "An Epic journey: One Piece"
+author: 'Hayatt Slimani'
+date: '2026-01-24'
+format: 
+  html:
+    theme: lux
+    toc: true
+    code-fold: false
+    smooth-scroll: true
+page-layout: article
+---
+
+
+# Synopsis 
+
+**[Wealth, fame, power!](https://www.youtube.com/watch?v=LI0aOPujj8o)**
+
+*One piece* is an ongoing Japanese manga (comic book) and anime written by Eiichiro Oda since 1999. It is a globally known as a story and symbol of freedom and liberation. *One piece* characters demonstrate that despite facing adversity, struggles, pain, losses, or victories, if you trust yourself and keep pushing forward, you can achieve your dreams. 
+
+The story follows a teenage boy, Monkey D. Luffy, who ate the Gum Gum fruit and became a rubber man. His goals are to gather a pirate crew, sail the Grand Line, find the ultimate treasure, known as the One Piece, and thus become King of the Pirates. 
+
+
+****
+
+
+## Reasons you should watch *One Piece*: 
+
+1. The story is ongoing, so you can enjoy it spoiler free
+2. You enjoy action/adventure stories with extensive world building, loveable characters, and deep backstories
+3. You like mysteries and coming up with theories 
+4. You enjoy catchy tunes
+5. There are many parallels that mirror our real world, from history and cultures to people and locations
+
+## Messages: Dichotomies of *One Piece* Themes
+
+- Oppression/ Injustice - Resistance / Freedom
+- Discrimination / Racism - Equality / Coexistence
+- Blood family - Found families
+- Fate - Free will
+- Power - Humanity 
+- Forbidden knowledge - Truth / Liberation
+- Inherited will / Legacy
+
+
+![The Strawhat Crew](/posts/post1/strawhats.jpg)
+
+## One Piece Pacing
+
+A common concern for new viewers is the length of *One Piece*. In spite of this, the story is comprised of a multitude of intricate intertwining stories. Each arc develops more of the world, retelling past stories and legacies while introducing new characters and conflicts. Click [here](https://onepiece.fandom.com/wiki/Episode_Guide) to view an episode guide broken down by the story arcs.
+
+
+
+Now, you may be asking: `How long will it take to catch up?` 
+
+```{r}
+total_episodes <- 1160
+episode_duration <- 24 
+total_minutes <- total_episodes * episode_duration
+total_hours <- total_minutes / 60
+total_days <- total_hours/ 24
+total_days
+```
+
+It will take around **19 days** of consecutive binge watching to catch up to the current episode of *One Piece*. 
+
+
+
+```{r}
+one_hour_a_day <- total_hours
+one_hour_a_day
+```
+
+
+More practically, if you allot one hour to watching *One Piece* a day, you would catch up in **464 days** or roughly **1 year and 3 months**. 
+
+## Viewer Experience 
+
+The One Piece journey is also shaped by community engagement, where fans exchange theories, interpretations, and reactions as the story continues to unfold. The anime can be enjoyed in both Japanese with English subtitles or with the English dub versions. Alternatively, the experience can also be equally as enjoyable when reading the manga, which currently spans over 1,181 chapters and is structured in arcs. While keeping up with the manga, I often listen to [this official soundtrack playlist](https://www.youtube.com/watch?v=SYZao9qhyLI&list=RDSYZao9qhyLI&start_radio=1) to help create an immersive atmosphere and set the tone of the intense experience. 
